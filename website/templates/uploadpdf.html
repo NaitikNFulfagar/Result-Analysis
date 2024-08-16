@@ -1,0 +1,64 @@
+{% extends 'base.html' %} {% block content %}
+
+  {% if user.is_authenticated %}
+
+  <a href="{% url 'add_uploadpdf' %}" class="btn btn-success">+ Add PDF</a>
+  <br />
+  <br />
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <!-- <th scope="col">Id</th> -->
+            <th scope="col">Name</th>
+            {% comment %} <th scope="col">Template</th> {% endcomment %}
+            <th scope="col">PDF</th>
+            <th scope="col">Excel</th>
+            <th scope="col">Anaylsis</th>
+            <th scope="col">Uploaded At</th>
+            <th scope="col">Uploaded by</th>
+            
+        </tr>
+        </thead>
+
+        <tbody>
+            {% if pdfs %}
+                {% for pdf in pdfs %}
+                <tr>
+                    <td scope="col"><a href={% url 'uploadpdf_record' pdf.id %}>{{ pdf.Name }} </a></td>
+                {% comment %} <td>{{ pdf.temp }}</td> {% endcomment %}
+                {% load static %}
+
+                <td><a href={% url 'media' pdf.pdf_file.name %} class="btn ">  <img src="https://raw.githubusercontent.com/NaitikFulfagar/assets/main/pdf-svgrepo-com.svg" alt="SVG image" style="width:30px">  </a></td>           {% comment %} {{ pdf.pdf_file }}</a></td> {% endcomment %}
+                <td><form method="post" action="{% url 'downloadcsv' %}" class="mr-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="Name" value="{{pdf.Name}}">
+                    <button type="submit" class="btn "><img src="https://raw.githubusercontent.com/NaitikFulfagar/assets/main/icons8-excel.svg" alt="SVG image" style="width:30px"> </button>
+                </form></td>
+                {% comment %} <td><form method="post" action="{% url 'dwdresays' %}" class="mr-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="Name" value="{{pdf.Name}}">
+                    <button type="submit" class="btn "><img src="/static/txt-file-symbol-svgrepo-com.svg" alt="SVG image" style="width:30px"> </button>
+                </form></td> {% endcomment %}
+                <td><form method="post" action="{% url 'dwdresaysdocx' %}" class="mr-2">
+                    {% csrf_token %}
+                    <input type="hidden" name="Name" value="{{pdf.Name}}">
+                    <button type="submit" class="btn "><img src="https://raw.githubusercontent.com/NaitikFulfagar/assets/main/microsoft-word-icon.svg" alt="SVG image" style="width:30px"> </button>
+                </form></td>
+                <td>{{ pdf.created_at }}</td>
+                <td>{{ pdf.created_by }}</td>
+                    
+                </tr>
+                {% endfor %}  
+            {% endif %}
+        </tbody>
+    </table>
+    
+
+    <br />
+    <br />
+
+
+  {% else %}
+  
+{% endif %} {% endblock %}

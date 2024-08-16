@@ -1,0 +1,51 @@
+{% extends 'base.html' %} {% block content %}
+{% load custom_filters %}
+
+  {% if user.is_authenticated %}
+
+  <a href="{% url 'add_templates' %}" class="btn btn-success">+ Add Template</a>
+  <br />
+  <br />
+
+    <table class="table table-bordered table-striped">
+        <thead class="table-dark">
+        <tr>
+            <!-- <th scope="col">Id</th> -->
+            <th scope="col">Name</th>
+            <th scope="col">Subject and code</th>
+            <th scope="col">Created At</th>
+            <th scope="col">Created By</th>
+        </tr>
+        </thead>
+
+        <tbody>
+            {% if records %}
+                {% for record in records %}
+                <tr>
+                    <td scope="col"><a href="{% url 'templates_record' record.id %}">{{ record.Name }}</a></td>
+                    <td scope="col">
+                        {% for key, value in record.key_value_pairs.items %}
+                            <strong>{{ value.0|initials }}</strong> - {{ key }},
+                            {% if forloop.counter|divisibleby:5 %}
+                                <br/>
+                            
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td scope="col">{{ record.created_at }}</td>
+                    <td scope="col">{{ record.created_by }}</td>
+                    
+                </tr>
+                {% endfor %}  
+            {% endif %}
+        </tbody>
+    </table>
+    
+
+    <br />
+    <br />
+
+
+  {% else %}
+  
+{% endif %} {% endblock %}

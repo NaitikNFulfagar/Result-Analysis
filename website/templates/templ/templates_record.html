@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<a href="{% url 'templates' %}" class="btn btn-secondary">< Back</a>
+<br />
+<br />
+
+<h1>Customer Record:</h1>
+<div class="card">
+    <div class="card-header">
+        <strong>{{ customer_record.Name }}          </strong>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><strong>Subjects: </strong>
+            {% comment %} {{ customer_record.key_value_pairs }} {% endcomment %}
+
+            {% for key, value in customer_record.key_value_pairs.items %}
+            <br/>
+            {{forloop.counter}} <span>&#41;</span>  {{ key }} -    {{ value }},
+                
+        {% endfor %}</p>
+    </div>
+    
+    </div>
+  <br />
+
+    <a href="{% url 'update_templates' customer_record.id %}" class="btn btn-success">Update</a>
+    <a href="{% url 'delete_templates' customer_record.id %}" class="btn btn-danger">Delete</a>
+  
+
+{% endblock %}

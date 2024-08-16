@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-8 offset-md-2">
+  <h1>Add Record:</h1>
+  <br />
+
+  <form id="uploadForm" method="POST" action="{% url 'add_templates' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <div class="form-group">
+      <label for="keyValuePairs"><strong>Subjects Details:</strong></label>
+      <table class="table table-bordered" id="keyValuePairsTable">
+        <thead>
+          <tr>
+            <th>Code</th>
+            <th>Name</th>
+            <th>Theory</th>
+            <th>Term Work</th>
+            <th>Practical</th>
+            <th>Oral</th>
+          </tr>
+        </thead>
+        <tbody id="keyValuePairs">
+          <tr>
+            <td><input type="text" style="width: 70px;" placeholder="Code" name="key" required/></td>
+            <td class="text-center"><input type="text" placeholder="Name" name="value1" required/></td>
+            <td class="text-center"><input type="checkbox" name="value2" /></td>
+            <td class="text-center"><input type="checkbox" name="value3" /></td>
+            <td class="text-center"><input type="checkbox" name="value4" /></td>
+            <td class="text-center"><input type="checkbox" name="value5" /></td>
+            <td class="text-center"><button class="btn btn-danger remove-zpair" type="button">Remove</button></td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="btn btn-primary" id="addPair" type="button">Add Row</button>
+    </div>
+    <input type="hidden" name="key_value_pairs" id="pairsInput">
+    <br />
+    <button type="submit" class="btn btn-secondary">Add</button>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#addPair').click(function () {
+      $('#keyValuePairs').append(`
+        <tr>
+            <td><input type="text" style="width: 70px;" placeholder="Code" name="key" required/></td>
+            <td class="text-center"><input type="text" placeholder="Name" name="value1" required/></td>
+            <td class="text-center"><input type="checkbox" name="value2" /></td>
+            <td class="text-center"><input type="checkbox" name="value3" /></td>
+            <td class="text-center"><input type="checkbox" name="value4" /></td>
+            <td class="text-center"><input type="checkbox" name="value5" /></td>
+            <td class="text-center"><button class="btn btn-danger remove-pair" type="button">Remove</button></td>
+          </tr>
+      `);
+    });
+
+    $(document).on('click', '.remove-pair', function () {
+      $(this).closest('tr').remove();
+    });
+
+    $('#uploadForm').submit(function (e) {
+      e.preventDefault(); // Prevent default form submission
+      
+      var pairs = {};
+
+      $('#keyValuePairs tr').each(function (index) {
+        var key = $(this).find('input[name="key"]').val().trim();
+        var value1 = $(this).find('input[name="value1"]').val().trim();
+        var value2 = $(this).find('input[name="value2"]').is(':checked');
+        var value3 = $(this).find('input[name="value3"]').is(':checked');
+        var value4 = $(this).find('input[name="value4"]').is(':checked');
+        var value5 = $(this).find('input[name="value5"]').is(':checked');
+
+        if (key !== '') {
+          pairs[key] = [value1, value2, value3, value4, value5];
+        }
+      });
+
+      $('#pairsInput').val(JSON.stringify(pairs));
+
+      // Manually submit the form after setting the hidden input value
+      this.submit();
+    });
+  });
+</script>
+{% endblock %}
+

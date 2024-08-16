@@ -1,0 +1,66 @@
+
+{% if user.is_authenticated %}
+
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles */
+    .sidebar {
+      position: fixed;
+      top: 56px; /* Height of the fixed top navbar */
+      bottom: 0;
+      left: 0;
+      z-index: 100;
+      /* Sidebar width */
+      width: 250px;
+      /* Background color */
+      background-color: #c0e0ff;
+      /* Padding to separate content from sidebar */
+      padding: 20px;
+    }
+
+    /* Adjust main content area to shift right */
+    .content {
+      margin-left: 250px; /* Should match sidebar width */
+      padding: 20px;
+    }
+
+    /* Adjust top margin of main content area to avoid overlap with fixed navbar */
+    @media (min-width: 768px) {
+      .content {
+        margin-top: 56px; /* Height of the fixed top navbar */
+      }
+    }
+  </style>
+<body>
+
+  <!-- Bootstrap Sidebar and Content -->
+  <div class="container-fluid">
+    <div class="row">
+      
+      <!-- Sidebar -->
+      <nav class="col-md-2 d-none d-md-block  sidebar" >
+        <div class="sidebar-sticky">
+          <ul class="nav flex-column">
+            <li class="nav-item">
+              <a class="nav-link active" href="{% url 'dashboard' %}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'templates' %}">Templates</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'uploadpdf' %}">Upload PDF</a>
+            </li>
+            {% comment %} <li class="nav-item">
+              <a class="nav-link" href="#">Download CSV</a>
+            </li> {% endcomment %}
+          </ul>
+        </div>
+      </nav>
+      <!-- End of Sidebar -->
+
+
+    </div>
+  </div>
+{% endif %}
+

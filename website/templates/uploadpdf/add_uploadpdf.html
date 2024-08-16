@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="col-md-6 offset-md-3">
+    <h2>{{ form.instance.pk|yesno:"Update,Upload" }} PDF</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <br />
+        
+
+    <h2>Divisionwise PRN</h2>
+        <div id="dynamic-fields-container">
+            {% for key,value in form.instance.div_PRN.items %}
+                <div class="field-group">
+                    <label>Division {{ forloop.counter0 }}</label>
+                    <textarea name="dynamic_field" class="form-control" rows="5">{% for item in value %}{{ item }}{% if not forloop.last %}
+{% endif %}{% endfor %}</textarea>
+                    <button type="button" class="btn btn-danger" onclick="this.parentElement.remove(); updateLabels();">Remove</button>
+                </div>
+            {% endfor %}
+        </div>
+        <button type="button" class="btn btn-primary" onclick="addField()">Add Field</button><br />
+
+        <br />
+        <button type="submit" class="btn btn-secondary">{{ form.instance.pk|yesno:"Update,Save" }}</button>
+</div>
+
+<script>
+    let fieldCount = {{ dynamic_fields|length }};
+
+    function getLabel(count) {
+        const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        let label = '';
+        while (count >= 0) {
+            label = alphabet[count % 26] + label;
+            count = Math.floor(count / 26) - 1;
+        }
+        return label;
+    }
+
+    function addField() {
+        // Create a new div to hold the new field and remove button
+        const fieldDiv = document.createElement('div');
+        fieldDiv.className = 'field-group';
+
+        // Create the label
+        const label = document.createElement('label');
+        label.textContent = `Division ${getLabel(fieldCount)}`;
+        fieldDiv.appendChild(label);
+
+        // Create the new input field
+        const input = document.createElement('textarea');
+        input.name = 'dynamic_field';
+        input.className = 'form-control';
+        input.rows = 5;
+        fieldDiv.appendChild(input);
+
+        // Create the remove button
+        const removeButton = document.createElement('button');
+        removeButton.type = 'button';
+        removeButton.className = 'btn btn-danger';
+        removeButton.textContent = 'Remove';
+        removeButton.onclick = function() {
+            this.parentElement.remove();
+            updateLabels(); // Update the labels after removal
+        };
+        fieldDiv.appendChild(removeButton);
+
+        // Append the new field and remove button to the container
+        document.getElementById('dynamic-fields-container').appendChild(fieldDiv);
+
+        // Increment the field count
+        fieldCount++;
+        updateLabels();
+    }
+
+    function updateLabels() {
+        const fields = document.querySelectorAll('.field-group label');
+        fields.forEach((label, index) => {
+            label.textContent = `Division ${getLabel(index)}`;
+        });
+    }
+
+    function initializeFields() {
+        updateLabels();
+        {% comment %} const fields = document.querySelectorAll('.field-group textarea');
+        fields.forEach((textarea, index) => {
+            textarea.name = `dynamic_field`;
+        }); {% endcomment %}
+    } 
+
+    document.addEventListener('DOMContentLoaded', initializeFields);
+</script>
+<style>
+    .save-button {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    .field-group {
+        margin-bottom: 15px;
+    }
+    body {
+        padding-bottom: 60px; /* Height of the footer */
+    }
+    .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        height: 60px; /* Adjust based on your footer height */
+    }
+</style>
+{% endblock %}

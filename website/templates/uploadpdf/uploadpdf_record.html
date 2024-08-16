@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<a href="{% url 'uploadpdf' %}" class="btn btn-secondary">< Back</a>
+<br />
+<br />
+
+<h1>Customer Record:</h1>
+<div class="card">
+    <div class="card-header">
+        <strong>{{ customer_record.year }} {{customer_record.sem }}</strong>
+    </div>
+    <div class="card-body">
+        <p class="card-text"><strong>Template Used: </strong>{{ customer_record.temp }}</p>
+
+        <p class="card-text"><strong>PDF file: </strong>{{ customer_record.pdf_file }}</p>
+
+
+
+    </div>
+  </div>
+  <br />
+  <br />
+  <div class="container">
+    <div class="d-flex justify-content-start">
+        <a href={{customer_record.pdf_file.url}} class="btn btn-primary mr-2">View PDF</a>
+        <form method="post" action="{% url 'downloadcsv' %}" class="mr-2">
+            {% csrf_token %}
+            <input type="hidden" name="Name" value="{{customer_record.Name}}">
+            <button type="submit" class="btn btn-info">Download Excel</button>
+        </form>
+        <a href="{% url 'update_uploadpdf' customer_record.id %}" class="btn btn-success mr-2">Update</a>
+        <a href="{% url 'delete_uploadpdf' customer_record.id %}" class="btn btn-danger">Delete</a>
+    </div>
+</div>
+{% comment %} </div>
+  <a href={{customer_record.pdf_file.url}} class="btn btn-primary">View PDF</a>
+  <form method="post" action="{% url 'home' %}">
+    {% csrf_token %}
+    <input type="hidden" name="Name" value="your_table_name">
+    <button type="submit" class="btn btn-info">Download CSV</button>
+</form>
+  <a href="{% url 'update_uploadpdf' customer_record.id %}" class="btn btn-success">Update</a>
+  <a href="{% url 'delete_uploadpdf' customer_record.id %}" class="btn btn-danger">Delete</a>
+     {% endcomment %}
+    
+{% endblock %}
